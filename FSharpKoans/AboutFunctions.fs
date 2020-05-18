@@ -47,7 +47,7 @@ module ``03: Putting the Function into Functional Programming`` =
         (fun zorro ->
             let k = "swash" // notice the indentation.
             let b = "buckle" // F# is whitespace-sensitive, so it is important!
-            zorro + " likes to " + k + b
+            zorro + " likes to " + k + " " + b
         ) "Zorro the pirate" |> should equal "Zorro the pirate likes to swash buckle"
 
     [<Test>]
@@ -94,7 +94,7 @@ module ``03: Putting the Function into Functional Programming`` =
 
     [<Test>]
     let ``13 You can write a function as a one-liner (Part 2).`` () =
-        (fun addition d e -> d + e) 10 7 |> should equal 17
+        (fun d e -> d + e) 10 7 |> should equal 17
 
     [<Test>]
     let ``14 'Multiple-argument' functions are one-input, one-output in disguise`` () =
@@ -166,10 +166,10 @@ module ``03: Putting the Function into Functional Programming`` =
     *)
         let somefunc x y = x + y x
         let square v = v * v
-        somefunc 3 square |> should equal 
-        somefunc 3 ((*) 7) |> should equal __
-        somefunc 10 ((+) 8) |> should equal __
-        somefunc 5 (fun z -> z + 22) |> should equal __
+        somefunc 3 square |> should equal 12 
+        somefunc 3 ((*) 7) |> should equal 24
+        somefunc 10 ((+) 8) |> should equal 28
+        somefunc 5 (fun z -> z + 22) |> should equal 32
 
    (*
        Did you know that operators like +, -, =, >, and so on, are actually
@@ -224,7 +224,7 @@ module ``03: Putting the Function into Functional Programming`` =
     let ``24 The output type of one pipe must be the input type to the next`` () =
         let a x = x * 2.5
         let b x = x = 7.5
-        a |> should be ofType<System.Double>
+        a |>  should be ofType<System.Double>
         b |> should be ofType<System.Double>
         __ |> __ |> __ |> should equal true
 
