@@ -56,7 +56,7 @@ module ``07: The Good Kind of Discrimination`` =
     [<Test>]
     let ``03 We can create a discriminated union using named fields`` () =
         let someDegree = BSc (second = ComputerScience, first = Mathematics)            
-        someDegree |> should equal (BSc (ComputerScience, Mathematics))
+        someDegree |> should equal (BSc (Mathematics, ComputerScience))
 
     [<Test>]
     let ``04 Pattern-matching using named fields`` () =
