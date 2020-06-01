@@ -101,10 +101,10 @@ module ``04: Match expressions`` =
         let f input =
             match input with
             | 0,0 -> "Both 0"
-            | 0,_ -> sprintf "One 0, one %d" __
-            | _,0 -> sprintf "One %d, one 0" __
+            | 0,a -> sprintf "One 0, one %d" a
+            | b,0 -> sprintf "One %d, one 0" b
             | _ -> "No 0"
-        f (3,0) |> should equal "One 0, one 3"
+        f (3,0) |> should equal "One 3, one 0"
         f (0, 4) |> should equal "One 0, one 4"
         f (9, 5) |> should equal "No 0"
         f (0, 0) |> should equal "Both 0"
