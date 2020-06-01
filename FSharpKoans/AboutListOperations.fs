@@ -75,7 +75,7 @@ module ``12: List operations are so easy, you could make them yourself!`` =
 
     [<Test>]
     let ``06 Fixed-function mapping, the hard way (part 2).`` () =
-        let map (xs : int list) : int list =  xs |> List.map (fun x -> x * x) // write a function which doubles each element
+        let map (xs : int list) : int list =  xs |> List.map (fun x -> x * 2) // write a function which doubles each element
         map [1; 2; 3; 4] |> should equal [2; 4; 6; 8]
         map [9; 8; 7; 6] |> should equal [18; 16; 14; 12]
         map [15; 2; 7] |> should equal [30; 4; 14]
@@ -194,18 +194,18 @@ or something else), it's likely that you'll be able to use a fold.
     [<Test>]
     let ``14 A fold which sums a list`` () =
         let fold initialState xs =
-            __ // write a function to do what's described above
+            List.fold(fun x y -> x + y)(initialState) (xs) // write a function to do what's described above
         fold 0 [1; 2; 3; 4] |> should equal 10
         fold 100 [2;4;6;8] |> should equal 120
 
     [<Test>]
     let ``15 A fold which multiplies a list`` () =
         let fold initialState xs =
-            __ // write a function to multiply the elements of a list
-        fold __ [99] |> should equal 99
-        fold 2 [__] |> should equal 22
-        fold __ [1;3;5;7] |> should equal 105
-        fold __ [2;5;3] |> should equal 0
+            List.fold(fun x y -> x * y)(initialState) (xs) // write a function to multiply the elements of a list
+        fold 1 [99] |> should equal 99
+        fold 2 [11] |> should equal 22
+        fold 1 [1;3;5;7] |> should equal 105
+        fold 0 [2;5;3] |> should equal 0
 
     // you probably know the drill by now.  It'd be good to have
     // a function which does the state-generation stuff, wouldn't
@@ -214,7 +214,7 @@ or something else), it's likely that you'll be able to use a fold.
     [<Test>]
     let ``16 Folding, the hard way`` () =
         let fold (f : 'a -> 'b -> 'a) (initialState : 'a) (xs : 'b list) : 'a =
-            __  // write a function to do a fold.
+            List.fold(f)(initialState)(xs)  // write a function to do a fold.
         fold (+) 0 [1;2;3;4] |> should equal 10
         fold (*) 2 [1;2;3;4] |> should equal 48
         fold (fun state item -> sprintf "%s %s" state item) "items:" ["dog"; "cat"; "bat"; "rat"]
@@ -224,17 +224,17 @@ or something else), it's likely that you'll be able to use a fold.
     // Hint: https://msdn.microsoft.com/en-us/library/ee353894.aspx
     [<Test>]
     let ``17 Folding, the easy way`` () =
-        __ (+) 0 [1;2;3;4] |> should equal 10
-        __ (*) 2 [1;2;3;4] |> should equal 48
-        __ (fun state item -> sprintf "%s %s" state item) "items:" ["dog"; "cat"; "bat"; "rat"]
+        List.fold (+) 0 [1;2;3;4] |> should equal 10
+        List.fold (*) 2 [1;2;3;4] |> should equal 48
+        List.fold (fun state item -> sprintf "%s %s" state item) "items:" ["dog"; "cat"; "bat"; "rat"]
         |> should equal "items: dog cat bat rat"
-        __ (fun state item -> state + float item + 0.5) 0.8 [1;3;5;7] |> should equal 18.8
+        List.fold (fun state item -> state + float item + 0.5) 0.8 [1;3;5;7] |> should equal 18.8
 
     // List.exists
     [<Test>]
     let ``18 exists: finding whether any matching item exists`` () =
         let exists (f : 'a -> bool) (xs : 'a list) : bool =
-            __ // Does this: https://msdn.microsoft.com/en-us/library/ee370309.aspx
+            List.exists(f) xs // Does this: https://msdn.microsoft.com/en-us/library/ee370309.aspx
         exists ((=) 4) [7;6;5;4;5] |> should equal true
         exists (fun x -> String.length x < 4) ["true"; "false"] |> should equal false
         exists (fun _ -> true) [] |> should equal false
@@ -243,7 +243,7 @@ or something else), it's likely that you'll be able to use a fold.
     [<Test>]
     let ``19 partition: splitting a list based on a criterion`` () =
         let partition (f : 'a -> bool) (xs : 'a list) : ('a list) * ('a list) =
-            __ // Does this: https://msdn.microsoft.com/en-us/library/ee353782.aspx
+            List.partition(f) xs // Does this: https://msdn.microsoft.com/en-us/library/ee353782.aspx
         let a, b = partition (fun x -> x%2=0) [1;2;3;4;5;6;7;8;9;10]
         a |> should equal [2;4;6;8;10]
         b |> should equal [1;3;5;7;9]
@@ -258,7 +258,7 @@ or something else), it's likely that you'll be able to use a fold.
     [<Test>]
     let ``20 init: creating a list based on a size and a function`` () =
         let init (n : int) (f : int -> 'a) : 'a list =
-            __ // Does this: https://msdn.microsoft.com/en-us/library/ee370497.aspx
+            List.init(n)f // Does this: https://msdn.microsoft.com/en-us/library/ee370497.aspx
         init 10 (fun x -> x*2) |> should equal [0;2;4;6;8;10;12;14;16;18]
         init 4 (sprintf "(%d)") |> should equal ["(0)";"(1)";"(2)";"(3)"]
 
@@ -266,7 +266,7 @@ or something else), it's likely that you'll be able to use a fold.
     [<Test>]
     let ``21 tryFind: find the first matching element, if any`` () =
         let tryFind (p : 'a -> bool) (xs : 'a list) : 'a option =
-            __ // Does this: https://msdn.microsoft.com/en-us/library/ee353506.aspx
+            List.tryFind(p)xs // Does this: https://msdn.microsoft.com/en-us/library/ee353506.aspx
         tryFind (fun x -> x<=45) [100;85;25;55;6] |> should equal (Some 25)
         tryFind (fun x -> x>450) [100;85;25;55;6] |> should equal None
 
@@ -274,7 +274,7 @@ or something else), it's likely that you'll be able to use a fold.
     [<Test>]
     let ``22 tryPick: find the first matching element, if any, and transform it`` () =
         let tryPick (p : 'a -> 'b option) (xs : 'a list) : 'b option =
-            __ // Does this: https://msdn.microsoft.com/en-us/library/ee353814.aspx
+            List.tryPick(p)xs // Does this: https://msdn.microsoft.com/en-us/library/ee353814.aspx
         let f x =
             match x<=45 with
             | true -> Some(x*2)
@@ -304,7 +304,7 @@ or something else), it's likely that you'll be able to use a fold.
         // - why can't it take an 'a->'b, instead of an 'a->'b option ?
         // - why does it return a 'b list, and not a 'b list option ?
         let choose (p : 'a -> 'b option) (xs : 'a list) : 'b list =
-            __ // Does this: https://msdn.microsoft.com/en-us/library/ee353456.aspx
+            List.choose(p)xs // Does this: https://msdn.microsoft.com/en-us/library/ee353456.aspx
         let f x =
             match x<=45 with
             | true -> Some(x*2)
@@ -322,7 +322,7 @@ or something else), it's likely that you'll be able to use a fold.
     [<Test>]
     let ``24 mapi: like map, but passes along an item index as well`` () =
         let mapi (f : int -> 'a -> 'b) (xs : 'a list) : 'b list =
-            __ // Does this: https://msdn.microsoft.com/en-us/library/ee353425.aspx
+            List.mapi(f)xs // Does this: https://msdn.microsoft.com/en-us/library/ee353425.aspx
         mapi (fun i x -> -i, x+1) [9;8;7;6] |> should equal [0,10; -1,9; -2,8; -3,7]
         let hailstone i t =
             match i%2 with
