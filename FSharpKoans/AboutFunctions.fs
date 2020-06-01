@@ -112,12 +112,12 @@ module ``03: Putting the Function into Functional Programming`` =
 
     [<Test>]
     let ``16 A function is executed when it is called, NOT when it is defined or referenced (Part 2).`` () =
-        fun () ->
+        (fun () ->
             let f a =
                 failwith "An exception will be thrown as soon as this is executed."
                 a + 2
-            f 1232 |> should equal 1234
-          |> should throw typeof<System.Exception>
+            f |> should equal 1234
+          )|> should throw typeof<System.Exception>
 
     [<Test>]
     let ``17 Two names can be bound to the same value`` () =
@@ -224,9 +224,9 @@ module ``03: Putting the Function into Functional Programming`` =
     let ``24 The output type of one pipe must be the input type to the next`` () =
         let a x = x * 2.5
         let b x = x = 7.5
-        a |>  should be ofType<System.Double>
-        b |> should be ofType<System.Double>
-        __ |> __ |> __ |> should equal true
+        a |>  should be ofType<float -> float>
+        b |> should be ofType<float->bool>
+        3.0 |> a |> b |> should equal true
 
     (*
         The backwards-pipe operator takes:
@@ -247,10 +247,10 @@ module ``03: Putting the Function into Functional Programming`` =
         let a x =
             x = 4
         not (a 4) |> should equal false
-        (__ __ a 4) |> should equal false // <-- put <| in one of the spaces to fill in
+        (not <| a 4) |> should equal false // <-- put <| in one of the spaces to fill in
 
     (*
-        The compose operator takes:
+        he compose operator takes:
         - a function 'a -> 'b
         - a function 'b -> 'c
         ...and returns a function 'a -> 'c .  In other words, it "joins" the first and second
@@ -300,8 +300,8 @@ module ``03: Putting the Function into Functional Programming`` =
     [<Test>]
     let ``29 Unit, as an input, conveys no data`` () = 
         let sayHello () = "hello"
-        sayHello |> should be ofType<Unit>
-        sayHello () |> should be ofType<System.String>
+        sayHello |> should be ofType<Unit -> string>
+        sayHello () |> should be ofType<string>
         sayHello () |> should equal "hello"
 
     (*
@@ -333,10 +333,10 @@ module ``03: Putting the Function into Functional Programming`` =
         let divideBy10 n () =
             n / 10
         let deferred = divideBy10 700
-        divideBy10 |> should be ofType<System.Int32>
-        deferred |> should be ofType<System.Int32>
-        divideBy10 850 |> should be ofType<System.Int32>
-        deferred () |> should be ofType<System.Int32>
+        divideBy10 |> should be ofType<int -> unit -> int>
+        deferred |> should be ofType<unit -> int>
+        divideBy10 850 |> should be ofType<unit -> int>
+        deferred () |> should be ofType<int>
         deferred () |> should equal 70
         divideBy10 6300 () |> should equal 630
 
@@ -372,7 +372,9 @@ module ``03: Putting the Function into Functional Programming`` =
         // as above, but what do you do when the arguments aren't in the order
         // that you want them to be in?
         let f animal noise = animal + " says " + noise
-        let howl k = f k  // <- multiple words on this line.  You MUST use `f`.
+        let howl k = 
+         let s = "slash/crunch/snap"
+         f k s// <- multiple words on this line.  You MUST use `f`.
         howl "dire wolf" |> should equal "dire wolf says slash/crunch/snap"
         howl "direr wolf" |> should equal "direr wolf says slash/crunch/snap"
 
@@ -381,7 +383,9 @@ module ``03: Putting the Function into Functional Programming`` =
         // Extending a bit more, what do you do when you want to apply a function,
         // but modify the result before you give it back?
         let f animal noise = animal + " says " + noise
-        let cows = __ // <-- multiple words on this line, or you may want to make this a multi-line thing.  You MUST use `f`.
+        let cows a = 
+          let s = "cow"
+          f s a + ", de gozaru"// <-- multiple words on this line, or you may want to make this a multi-line thing.  You MUST use `f`.
         cows "moo" |> should equal "cow says moo, de gozaru"
         cows "MOOooOO" |> should equal "cow says MOOooOO, de gozaru"
 
