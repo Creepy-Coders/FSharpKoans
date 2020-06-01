@@ -73,8 +73,8 @@ module ``07: The Good Kind of Discrimination`` =
 
     [<Test>]
     let ``05 A discriminated union case with associated data is a function`` () =
-        Broken |> should be ofType<System.Int32>
-        Rented |> should be ofType<System.String>
+        Broken |> should be ofType<int -> EquipmentStatus>
+        Rented |> should be ofType<string -> EquipmentStatus>
 
     type BinaryTree =
     | Empty
